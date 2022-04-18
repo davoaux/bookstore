@@ -1,5 +1,6 @@
 package com.adobe.bookstore;
 
+import com.adobe.bookstore.domain.BookStock;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
