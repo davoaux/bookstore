@@ -14,7 +14,7 @@ public class Order {
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false)
-    private Long id;
+    private Long id; // TODO Use a more appropriate type instead of a simple long (UUID?)
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
     private List<OrderItem> orderItems = new ArrayList<>();

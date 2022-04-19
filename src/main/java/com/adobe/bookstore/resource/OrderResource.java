@@ -2,6 +2,7 @@ package com.adobe.bookstore.resource;
 
 import com.adobe.bookstore.dto.OrderItemRequestDTO;
 import com.adobe.bookstore.dto.OrderResponseDTO;
+import com.adobe.bookstore.exception.OrderCreationException;
 import com.adobe.bookstore.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,17 +14,24 @@ import java.util.List;
 @RequestMapping("/orders/")
 public class OrderResource {
 
-    @Autowired
     private OrderService orderService;
+
+    @Autowired
+    public OrderResource(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @GetMapping
     public ResponseEntity<List<OrderResponseDTO>> getAll() {
         return ResponseEntity.ok(orderService.getAll());
     }
 
-    // TODO impl validation
     @PostMapping
-    public ResponseEntity<Long> create(@RequestBody List<OrderItemRequestDTO> orderItems) {
-        return ResponseEntity.ok(orderService.create(orderItems));
+    public ResponseEntity create(@RequestBody List<OrderItemRequestDTO> orderItems) {
+        try {
+            return orderService.create(orderItems);
+        } catch (OrderCreationException e) {
+            return ResponseEntity.status(e.getHttpStatus()).body(e.getMessage());
+        }
     }
 }

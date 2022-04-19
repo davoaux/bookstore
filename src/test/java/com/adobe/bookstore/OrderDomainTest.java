@@ -1,11 +1,11 @@
 package com.adobe.bookstore;
 
+import com.adobe.bookstore.domain.BookStock;
 import com.adobe.bookstore.domain.Order;
 import com.adobe.bookstore.domain.OrderItem;
-import com.adobe.bookstore.domain.BookStock;
+import com.adobe.bookstore.repository.BookStockRepository;
 import com.adobe.bookstore.repository.OrderItemRepository;
 import com.adobe.bookstore.repository.OrderRepository;
-import com.adobe.bookstore.repository.BookStockRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
