@@ -58,7 +58,7 @@ public class OrderService {
      * @throws NoSuchElementException
      * @throws OrderCreationException
      */
-    public ResponseEntity<Long> create(List<OrderItemRequestDTO> orderItemsDTO) throws NoSuchElementException, OrderCreationException {
+    public ResponseEntity<UUID> create(List<OrderItemRequestDTO> orderItemsDTO) throws NoSuchElementException, OrderCreationException {
         if (orderItemsDTO.isEmpty())
             throw new OrderCreationException(HttpStatus.BAD_REQUEST, "An order must have at least 1 order item");
 

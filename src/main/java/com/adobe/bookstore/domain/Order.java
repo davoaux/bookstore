@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "book_order")
@@ -14,7 +15,7 @@ public class Order {
     @Id
     @GeneratedValue
     @Column(name = "id", nullable = false)
-    private Long id; // TODO Use a more appropriate type instead of a simple long (UUID?)
+    private UUID id;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.MERGE)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -25,17 +26,17 @@ public class Order {
     public Order() {
     }
 
-    public Order(Long id, List<OrderItem> orderItems, boolean accepted) {
+    public Order(UUID id, List<OrderItem> orderItems, boolean accepted) {
         this.id = id;
         this.orderItems = orderItems;
         this.accepted = accepted;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

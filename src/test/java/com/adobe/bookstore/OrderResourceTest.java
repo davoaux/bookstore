@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
@@ -42,8 +43,8 @@ public class OrderResourceTest {
     }
 
     @Test
-    @Sql(statements = "INSERT INTO book_order (id) VALUES (1L);" +
-            "INSERT INTO book_order (id) VALUES (2L);")
+    @Sql(statements = "INSERT INTO book_order (id) VALUES (RANDOM_UUID());" +
+            "INSERT INTO book_order (id) VALUES (RANDOM_UUID());")
     public void shouldReturnTwoBookOrders() {
         var result = restTemplate.getForEntity("http://localhost:" + port + "/orders/", OrderResponseDTO[].class);
         OrderResponseDTO[] orders = result.getBody();
@@ -67,9 +68,9 @@ public class OrderResourceTest {
 
         HttpEntity<String> entity = new HttpEntity<String>(json.toString(), headers);
 
-        var result = restTemplate.postForEntity("http://localhost:" + port + "/orders/", entity, Long.class);
+        var result = restTemplate.postForEntity("http://localhost:" + port + "/orders/", entity, UUID.class);
 
-        assertThat(result.getBody()).isEqualTo(1L);
+        assertThat(result.getBody()).isOfAnyClassIn(UUID.class);
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.CREATED);
     }
 

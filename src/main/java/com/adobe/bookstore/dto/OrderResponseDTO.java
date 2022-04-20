@@ -1,23 +1,24 @@
 package com.adobe.bookstore.dto;
 
 import java.util.List;
+import java.util.UUID;
 
 public class OrderResponseDTO {
-    private Long orderId;
+    private UUID orderId;
     private List<OrderItemResponseDTO> items;
     private boolean accepted;
 
-    public OrderResponseDTO(Long id, List<OrderItemResponseDTO> items, boolean accepted) {
+    public OrderResponseDTO(UUID id, List<OrderItemResponseDTO> items, boolean accepted) {
         this.orderId = id;
         this.items = items;
         this.accepted = accepted;
     }
 
-    public Long getOrderId() {
+    public UUID getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(Long orderId) {
+    public void setOrderId(UUID orderId) {
         this.orderId = orderId;
     }
 
