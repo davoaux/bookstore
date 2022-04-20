@@ -2,8 +2,11 @@ package com.adobe.bookstore.service;
 
 import com.adobe.bookstore.domain.BookStock;
 import com.adobe.bookstore.domain.Order;
+import com.adobe.bookstore.dto.BookStockResponseDTO;
+import com.adobe.bookstore.dto.Mapper;
 import com.adobe.bookstore.repository.BookStockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +18,18 @@ public class BookStockService {
     @Autowired
     public BookStockService(BookStockRepository bookStockRepository) {
         this.bookStockRepository = bookStockRepository;
+    }
+
+    /**
+     * Find BookStock by ID and return it in a ResponseEntity
+     *
+     * @param bookId
+     * @return
+     */
+    public ResponseEntity<BookStockResponseDTO> findById(String bookId) {
+        return bookStockRepository.findById(bookId)
+                .map(bookStock -> ResponseEntity.ok(Mapper.bookStockToDTO(bookStock)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     /**

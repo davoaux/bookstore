@@ -1,5 +1,6 @@
 package com.adobe.bookstore.dto;
 
+import com.adobe.bookstore.domain.BookStock;
 import com.adobe.bookstore.domain.Order;
 
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 public class Mapper {
+
     public static OrderResponseDTO orderToDTO(Order order) {
         List<OrderItemResponseDTO> orderItemsDTO = order
                 .getOrderItems()
@@ -15,5 +17,9 @@ public class Mapper {
                 .collect(toList());
 
         return new OrderResponseDTO(order.getId(), orderItemsDTO, order.isAccepted());
+    }
+
+    public static BookStockResponseDTO bookStockToDTO(BookStock bookStock) {
+        return new BookStockResponseDTO(bookStock.getId(), bookStock.getName(), bookStock.getQuantity());
     }
 }

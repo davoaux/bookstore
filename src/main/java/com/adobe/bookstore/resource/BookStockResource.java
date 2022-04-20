@@ -1,7 +1,7 @@
 package com.adobe.bookstore.resource;
 
-import com.adobe.bookstore.domain.BookStock;
-import com.adobe.bookstore.repository.BookStockRepository;
+import com.adobe.bookstore.dto.BookStockResponseDTO;
+import com.adobe.bookstore.service.BookStockService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,17 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/books_stock/")
 public class BookStockResource {
 
-    private BookStockRepository bookStockRepository;
+    private BookStockService bookStockService;
 
     @Autowired
-    public BookStockResource(BookStockRepository bookStockRepository) {
-        this.bookStockRepository = bookStockRepository;
+    public BookStockResource(BookStockService bookStockService) {
+        this.bookStockService = bookStockService;
     }
 
     @GetMapping("{bookId}")
-    public ResponseEntity<BookStock> getStockById(@PathVariable String bookId) {
-        return bookStockRepository.findById(bookId)
-                .map(bookStock -> ResponseEntity.ok(bookStock))
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<BookStockResponseDTO> getStockById(@PathVariable String bookId) {
+        return bookStockService.findById(bookId);
     }
 }
