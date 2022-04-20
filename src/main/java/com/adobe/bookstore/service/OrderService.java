@@ -15,9 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static java.util.stream.Collectors.toList;
 
@@ -69,19 +67,34 @@ public class OrderService {
 
         List<OrderItem> newOrderItems = new ArrayList<>();
 
+        // Assuming an order can have multiple order items for the same book, we'll use this map to keep track of the
+        // book stock and check if there is enough to process the order
+        Map<String, Integer> quantityByBookStock = new HashMap<>();
+
         // Set new Order and OrderItems
         for (OrderItemRequestDTO itemDTO : orderItemsDTO) {
             OrderItem orderItem = new OrderItem();
             BookStock bookStock = stockRepository
                     .findById(itemDTO.getBook())
                     .orElseThrow();
+
+            String bookStockId = bookStock.getId();
             int quantity = itemDTO.getQuantity();
 
             if (quantity < 1)
                 throw new OrderCreationException(HttpStatus.BAD_REQUEST, "An order item must have a quantity of at least 1");
 
-            if (bookStock.getQuantity() - quantity < 0)
-                throw new OrderCreationException(HttpStatus.UNPROCESSABLE_ENTITY, "There is not enough stock for the book: " + bookStock.getId());
+            // Update map of book stock quantities
+            if (quantityByBookStock.containsKey(bookStockId)) {
+                int prevQuantity = quantityByBookStock.get(bookStockId);
+                quantityByBookStock.put(bookStockId, prevQuantity + quantity);
+            } else {
+                quantityByBookStock.put(bookStockId, quantity);
+            }
+
+            // Check if there is enough stock for the current book
+            if (bookStock.getQuantity() - quantityByBookStock.get(bookStockId) < 0)
+                throw new OrderCreationException(HttpStatus.UNPROCESSABLE_ENTITY, "There is not enough stock for the book: " + bookStockId);
 
             orderItem.setQuantity(quantity);
             orderItem.setOrder(newOrder);

@@ -55,10 +55,10 @@ public class OrderResourceTest {
     @Test
     public void createOrderShouldReturnOrderId() throws JSONException {
         JSONObject jsonBook1 = new JSONObject();
-        jsonBook1.put("book", "58716995-b335-4bb0-89c1-3503bc003118");
+        jsonBook1.put("book", "58716995-b335-4bb0-89c1-3503bc003118");  // Has a quantity of 5
         jsonBook1.put("quantity", 1);
         JSONObject jsonBook2 = new JSONObject();
-        jsonBook2.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281");
+        jsonBook2.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281"); // Has a quantity of 4
         jsonBook2.put("quantity", 4);
         JSONArray json = new JSONArray(List.of(jsonBook1, jsonBook2));
 
@@ -76,9 +76,31 @@ public class OrderResourceTest {
     @Test
     public void createOrderShouldReturnNotEnoughStockError() throws JSONException {
         JSONObject jsonBook1 = new JSONObject();
-        jsonBook1.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281");
+        jsonBook1.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281"); // Has a quantity of 4
         jsonBook1.put("quantity", 5);
         JSONArray json = new JSONArray(List.of(jsonBook1));
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<String> entity = new HttpEntity<String>(json.toString(), headers);
+
+        var result = restTemplate.postForEntity("http://localhost:" + port + "/orders/", entity, String.class);
+
+        assertThat(result.getBody()).isOfAnyClassIn(String.class);
+        assertThat(result.getBody()).isEqualTo("There is not enough stock for the book: e415e3af-e87e-47e6-9bf2-f08c72e2f281");
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY);
+    }
+
+    @Test
+    public void createOrderOfSameBookMultipleTimesShouldReturnNotEnoughStockError() throws JSONException {
+        JSONObject jsonBook1 = new JSONObject();
+        jsonBook1.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281"); // Has a quantity of 4
+        jsonBook1.put("quantity", 3);
+        JSONObject jsonBook2 = new JSONObject();
+        jsonBook2.put("book", "e415e3af-e87e-47e6-9bf2-f08c72e2f281"); // Same book
+        jsonBook2.put("quantity", 4);
+        JSONArray json = new JSONArray(List.of(jsonBook1, jsonBook2));
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
